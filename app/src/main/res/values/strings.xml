@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BrainBlitzApp</string>
+    <string name="appName">Brain Blitz</string>
+    <string name="signup">Signup</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="email_instruction">Enter Your Email</string>
+    <string name="password_instruction">Enter Your Password</string>
+    <string name="username_instruction">Enter a Username</string>
+</resources>

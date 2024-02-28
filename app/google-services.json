@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026794137559",
+    "project_id": "brainblitzapp",
+    "storage_bucket": "brainblitzapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026794137559:android:0769ac11e6a1f9c449cd92",
+        "android_client_info": {
+          "package_name": "com.example.brainblitzapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcKyZi8wkw1ikwsHegQr5EvtsPEMfNdG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
