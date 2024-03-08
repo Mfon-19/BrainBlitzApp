@@ -3,8 +3,9 @@ package com.example.brainblitzapp;
 public class PasswordValidator {
     public static int checkPasswordStrength(String password){
         //initialize score and set flags for checks
-        int score = password.length() > 7 ? 1 : 0;
-        boolean upperCase = false, lowerCase = false, digit = false, symbol = false;
+        int score = password.length() > 7 && password.length() < 16 ? 1 : 0; //assign a score for acceptable password length
+
+        boolean upperCase = false, lowerCase = false, digit = false, symbol = false; //set flags for password characteristics
 
         for(int i = 0; i < password.length(); i++){
             //has at least one upper case letter
@@ -39,6 +40,7 @@ public class PasswordValidator {
         return score;
     }
 
+    //checks if "value" is in between "minValue" and "maxValue"
     private static boolean inRange(int minValue, int maxValue, int value) {
         if (maxValue < minValue) {
             return false;
