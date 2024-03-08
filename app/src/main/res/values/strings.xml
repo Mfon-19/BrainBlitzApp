@@ -8,4 +8,6 @@
     <string name="email_instruction">Enter Your Email</string>
     <string name="password_instruction">Enter Your Password</string>
     <string name="username_instruction">Enter a Username</string>
+    <string name="login">Login</string>
+    <string name="welcome_to_brain_blitz">Welcome to Brain Blitz</string>
 </resources>
