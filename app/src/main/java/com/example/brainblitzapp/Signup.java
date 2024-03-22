@@ -1,5 +1,6 @@
 package com.example.brainblitzapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,11 +31,13 @@ public class Signup extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     FirebaseFirestore db;
+    SessionManager sessionManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_screen);
 
+        sessionManager = new SessionManager(this);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -86,6 +89,7 @@ public class Signup extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Signup.this, "Signup Successful!", Toast.LENGTH_SHORT).show();
                             Log.d("Debugging texts", "Authentication successful");
+
                         }
                         else {
                             Toast.makeText(Signup.this, "Signup Unsuccessful!", Toast.LENGTH_SHORT).show();
@@ -104,6 +108,8 @@ public class Signup extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         Log.d("Debugging texts", "Created user in db successfully!");
+                        sessionManager.saveUsername(username);
+                        sessionManager.saveLoginTime();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

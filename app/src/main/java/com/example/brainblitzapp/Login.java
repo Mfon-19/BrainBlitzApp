@@ -1,5 +1,7 @@
 package com.example.brainblitzapp;
 
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,10 +24,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.type.DateTime;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Login extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
+    SessionManager sessionManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +41,7 @@ public class Login extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        sessionManager = new SessionManager(this);
 
         final EditText usernameText = findViewById(R.id.username);
         final EditText passwordText = findViewById(R.id.password);
@@ -73,7 +82,10 @@ public class Login extends AppCompatActivity {
                                             if(task.isSuccessful()){
                                                 Toast.makeText(Login.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                                                 Log.d("Debugging Texts", "Signin successful");
-                                                //TODO: Create an intent that send the user to the home screen
+
+                                                sessionManager.saveLoginTime();
+
+                                                //TODO: Create an intent that send the user to the home screen create a loadData method for it
                                             }else{
                                                 Toast.makeText(Login.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
                                                 Log.d("Debugging Texts", "Signin unsuccessful");
