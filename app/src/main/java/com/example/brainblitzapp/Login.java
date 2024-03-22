@@ -1,5 +1,6 @@
 package com.example.brainblitzapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,54 +53,62 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 final String username = usernameText.getText().toString().trim();
                 final String password = passwordText.getText().toString().trim();
-                Log.d("Debugging Texts", "Username is: "+username);
-                Log.d("Debugging Texts", "Password is: "+password);
+
+                //validate username and password fields
                 if(username.isEmpty()){
                     Toast.makeText(Login.this, "Please enter a username", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 if(password.isEmpty()){
                     Toast.makeText(Login.this, "Please enter a password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                final String[] userEmail = {""};
 
-                Log.d("Debugging Texts", "Start of Query");
-                db.collection("users").whereEqualTo("username", username).get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
-                                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                                        userEmail[0] = documentSnapshot.getString("email");
-                                        Log.d("Debugging Texts", "User email is: "+userEmail[0]+"Gotten email successfully");
-                                    }
-                                    Log.d("Debugging Texts", "Starting signin");
-                                    Log.d("Debugging Texts", "User email is: "+userEmail[0]+"Password is: "+password);
-                                    mAuth.signInWithEmailAndPassword(userEmail[0].trim(), password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if(task.isSuccessful()){
-                                                Toast.makeText(Login.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                                                Log.d("Debugging Texts", "Signin successful");
+                //if fields are valid login user with username and password
+                loginWithUsername(username, password);
+            }
+        });
+    }
 
-                                                sessionManager.saveLoginTime();
+    protected void loginWithUsername(String username, String password){
+        final String[] userEmail = {""};
 
-                                                //TODO: Create an intent that send the user to the home screen create a loadData method for it
-                                            }else{
-                                                Toast.makeText(Login.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
-                                                Log.d("Debugging Texts", "Signin unsuccessful");
-                                            }
-                                        }
-                                    });
-                                    Log.d("Debugging Texts", "End of signin");
-                                }
-                                else{
-                                    Log.d("Debugging Texts", "Error getting documents", task.getException());
-                                    Log.d("Debugging Texts", "Email query unsuccessful");
-                                }
+        //query the database to get the user email associated with the given username
+        db.collection("users").whereEqualTo("username", username).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                userEmail[0] = documentSnapshot.getString("email");
                             }
-                        });
+
+                            //signin user with email and password
+                            signinUser(userEmail[0].trim(), password);
+                        }
+                        else{
+                            Toast.makeText(Login.this, "Incorrect Login Info", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void signinUser(String email, String password){
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(Login.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+
+                    //save user login time for session management
+                    sessionManager.saveLoginTime();
+
+                    //send user to the homepage
+                    startActivity(new Intent( Login.this, HomeActivity.class));
+                }else{
+                    Toast.makeText(Login.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

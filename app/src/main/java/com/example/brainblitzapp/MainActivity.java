@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-
-    FirebaseAuth mAuth;
     SessionManager sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, Signup.class);
                 startActivity(intent);
-                startActivity(new Intent( MainActivity.this, HomeActivity.class));
             }
         });
 
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, Login.class);
                 startActivity(intent);
-                startActivity(new Intent( MainActivity.this, HomeActivity.class));
             }
         });
     }
