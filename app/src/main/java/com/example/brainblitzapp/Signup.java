@@ -133,6 +133,6 @@ public class Signup extends AppCompatActivity {
     }
 
     private static boolean isValidPassword(String password){
-        return (PasswordValidator.checkPasswordStrength(password) > 5);
+        return (PasswordValidator.checkPasswordStrength(password) >= 5);
     }
 }
