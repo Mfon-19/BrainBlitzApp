@@ -104,7 +104,6 @@ public class Signup extends AppCompatActivity {
             }
         });
     }
-
     private void registerUserInDatabase(String username, String email){
         //create a username and email field and store provided parameters
         Map<String, Object> users = new HashMap<>();
@@ -133,6 +132,6 @@ public class Signup extends AppCompatActivity {
     }
 
     private static boolean isValidPassword(String password){
-        return (PasswordValidator.checkPasswordStrength(password) > 5);
+        return (PasswordValidator.checkPasswordStrength(password) >= 5);
     }
 }
