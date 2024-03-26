@@ -1,6 +1,9 @@
 package com.example.brainblitzapp;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +34,43 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(quizModelList.get(position));
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.binding.quizTitleText.setText(quizModelList.get(position).getTitle());
+
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            String difficulty;
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), QuizActivity.class);
+
+                int category = quizModelList.get(position).getId();
+
+
+                final String[] difficulties = {"Easy", "Medium", "Hard"};
+                new AlertDialog.Builder(context)
+                        .setView(holder.binding.getRoot()).setTitle("Select a difficulty").setItems(difficulties, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                difficulty = difficulties[which];
+                            }
+                        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                intent.putExtra("difficulty", difficulty);
+                                intent.putExtra("id", category);
+
+                                context.startActivity(intent);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // nothing needs to be done because maybe the user wants to select a different topic
+                            }
+                        });
+
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -46,18 +84,6 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
         public MyViewHolder(@NonNull QuizItemRecyclerRowBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-        }
-
-        public void bind(QuizModel model) {
-            binding.quizTitleText.setText(model.getTitle());
-
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), QuizActivity.class);
-                    v.getContext().startActivity(intent);
-                }
-            });
         }
     }
 }
