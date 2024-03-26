@@ -1,6 +1,7 @@
 package com.example.brainblitzapp;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -48,9 +49,13 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         binding.btn3.setOnClickListener(this);
         binding.nextBtn.setOnClickListener(this);
 
+        Intent intent = getIntent();
+
+        int category = intent.getIntExtra("id", 0);
+        String difficulty = intent.getStringExtra("difficulty");
 
         //i'm thinking we set the questions up in the HomeActivity so this class doesn't have too much processing to do
-        questionModelList = getQuestions(1, "easy");//TODO: change this to the users selection
+        questionModelList = getQuestions(category, difficulty);
 
         loadQuestions();
         startTimer();
@@ -155,7 +160,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         QuizActivity.questionModelList = questionModelList;
     }
 
-    public List<QuestionModel> getQuestions(int category, String difficulty){
+    private List<QuestionModel> getQuestions(int category, String difficulty){
         String API_ENDPOINT = "https://opentdb.com/api.php?amount=10&category="+category+"&difficulty="+difficulty+"&type=multiple";
         List<QuestionModel> questions = new ArrayList<>();
 

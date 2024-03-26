@@ -38,27 +38,13 @@ public class HomeActivity extends AppCompatActivity {
         // on the intent to send the user to QuizActivity, should send both the quiz model id variable
         // and the difficulty the user selected as a string
 
-        getDataFromFirebase();
+        setupRecyclerView();
     }
     private void setupRecyclerView() {
         binding.progressBar.setVisibility(View.GONE);
         adapter = new QuizListAdapter(quizModelList, this);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
-    }
-    private void getDataFromFirebase() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        FirebaseDatabase.getInstance().getReference().get().addOnSuccessListener(dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    QuizModel quizModel = snapshot.getValue(QuizModel.class);
-                    if (quizModel != null) {
-                        quizModelList.add(quizModel);
-                    }
-                }
-            }
-            setupRecyclerView();
-        });
     }
 }
 
