@@ -104,7 +104,6 @@ public class Signup extends AppCompatActivity {
             }
         });
     }
-
     private void registerUserInDatabase(String username, String email){
         //create a username and email field and store provided parameters
         Map<String, Object> users = new HashMap<>();

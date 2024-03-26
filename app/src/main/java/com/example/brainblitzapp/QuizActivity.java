@@ -9,8 +9,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.brainblitzapp.databinding.QuizActivityBinding;
 import com.example.brainblitzapp.databinding.ScoreBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
@@ -19,7 +32,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private static String time;
 
     private QuizActivityBinding binding;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex = -1;
     private String selectedAnswer = "";
     private int score = 0;
 
@@ -34,6 +47,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         binding.btn2.setOnClickListener(this);
         binding.btn3.setOnClickListener(this);
         binding.nextBtn.setOnClickListener(this);
+
+
+        //i'm thinking we set the questions up in the HomeActivity so this class doesn't have too much processing to do
+        questionModelList = getQuestions(1, "easy");//TODO: change this to the users selection
 
         loadQuestions();
         startTimer();
@@ -58,6 +75,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void loadQuestions() {
+        currentQuestionIndex++;
+
         selectedAnswer = "";
         if (currentQuestionIndex == questionModelList.size()) {
             finishQuiz();
@@ -66,7 +85,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         binding.questionIndicatorTextview.setText("Question " + (currentQuestionIndex + 1) + "/ " + questionModelList.size());
         binding.questionProgressIndicator.setProgress((int) (currentQuestionIndex * 100.0f / questionModelList.size()));
+
+        // set the question
         binding.questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
+
+        //sets the answers to be clicked by the user
         binding.btn0.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
         binding.btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
         binding.btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
@@ -127,10 +150,62 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 .setCancelable(false)
                 .show();
     }
+
     public static void setQuestionModelList(List<QuestionModel> questionModelList) {
         QuizActivity.questionModelList = questionModelList;
     }
 
+    public List<QuestionModel> getQuestions(int category, String difficulty){
+        String API_ENDPOINT = "https://opentdb.com/api.php?amount=10&category="+category+"&difficulty="+difficulty+"&type=multiple";
+        List<QuestionModel> questions = new ArrayList<>();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                API_ENDPOINT,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try {
+                            //get json array "results"
+                            JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                            //iterate over the number of json objects embedded in the json array
+                            for(int i = 0; i < jsonArray.length(); i++){
+                                //get the first json object at index 'i'
+                                JSONObject result = jsonArray.getJSONObject(i);
+
+                                //put the incorrect answers from the "incorrect_answers" json array in the json object into an arraylist
+                                List<String> incorrectAnswers = new ArrayList<>();
+                                JSONArray jArray = result.getJSONArray("incorrect_answers");
+                                for (int j = 0; j < jArray.length(); j++) {
+                                    incorrectAnswers.add(jArray.getString(i));
+                                }
+
+                                //add a question model object containing the question, incorrect answers list and correct answer into the questions list
+                                questions.add(new QuestionModel(result.getString("question"), incorrectAnswers,
+                                                                result.getString("correct_answer")));
+                                
+                            }
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+
+        return questions;
+    }
     public static void setTime(String time) {
         QuizActivity.time = time;
     }

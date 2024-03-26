@@ -26,12 +26,6 @@
                 tools:text="Android"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/quiz_subtitle_text"
-                android:layout_marginTop="4dp"
-                tools:text="All about Android OS"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -39,20 +33,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/icon_timer"
-                app:tint="@color/orange" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/quiz_time_text"
-                tools:text="20 min"/>
-
-        </LinearLayout>
+            android:orientation="vertical"/>
 
     </RelativeLayout>
 
