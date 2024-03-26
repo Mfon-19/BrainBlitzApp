@@ -119,7 +119,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 finish();
-            }
+            } // send an intent back to the home activity
         });
 
         new AlertDialog.Builder(this)
