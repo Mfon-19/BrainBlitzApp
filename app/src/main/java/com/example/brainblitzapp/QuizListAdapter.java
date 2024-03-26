@@ -50,15 +50,11 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
 
         public void bind(QuizModel model) {
             binding.quizTitleText.setText(model.getTitle());
-            binding.quizSubtitleText.setText(model.getSubtitle());
-            binding.quizTimeText.setText(model.getTime() + " min"); //want to remove this
 
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), QuizActivity.class);
-                    QuizActivity.setQuestionModelList(model.getQuestionList());  //remove this as well, will do in quizactivity
-                    QuizActivity.setTime(model.getTime());
                     v.getContext().startActivity(intent);
                 }
             });
