@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -70,29 +71,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
 
         questionModelList = getQuestions(category, difficulty);
-
-
-        //startTimer();
     }
-
-//    private void startTimer() {
-//        long totalTimeInMillis = Integer.parseInt(time) * 60 * 1000L;
-//        new CountDownTimer(totalTimeInMillis, 1000L) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                long seconds = millisUntilFinished / 1000;
-//                long minutes = seconds / 60;
-//                long remainingSeconds = seconds % 60;
-//                TextView timerIndicatorTextview = findViewById(R.id.timer_indicator_textview);
-//                timerIndicatorTextview.setText(String.format("%02d:%02d", minutes, remainingSeconds));
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                // Finish the quiz
-//            }
-//        }.start();
-//    }
 
     private void loadQuestions() {
         Log.d("Debugging Texts", "CurrentQuestionIndex is: " + currentQuestionIndex);
