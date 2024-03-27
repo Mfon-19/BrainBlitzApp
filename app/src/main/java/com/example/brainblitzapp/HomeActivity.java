@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
         //this is how we would set up the topics recycler view, not getDataFromFirebase()
 
         quizModelList.add(new QuizModel(9, "General Knowledge"));
-        quizModelList.add(new QuizModel(10, "Computer Science"));
+        quizModelList.add(new QuizModel(18, "Computer Science"));
         quizModelList.add(new QuizModel(22, "Geography"));
         quizModelList.add(new QuizModel(24, "Politics"));
         quizModelList.add(new QuizModel(27, "Animals"));
