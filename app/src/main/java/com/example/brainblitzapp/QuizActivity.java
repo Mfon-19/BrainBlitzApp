@@ -35,16 +35,22 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private int currentQuestionIndex = -1;
     private String selectedAnswer = "";
     private int score = 0;
-    Button btn0 = findViewById(R.id.btn0);
-    Button btn1 = findViewById(R.id.btn1);
-    Button btn2 = findViewById(R.id.btn2);
-    Button btn3 = findViewById(R.id.btn3);
-    Button nextBtn = findViewById(R.id.next_btn);
 
+    Button btn0;
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button nextBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_activity);
+
+        btn0 = findViewById(R.id.btn0);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        nextBtn = findViewById(R.id.next_btn);
 
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
