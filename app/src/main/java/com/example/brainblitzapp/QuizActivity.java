@@ -37,6 +37,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private int score = 0;
     private int incrementValue;
 
+    TextView points = findViewById(R.id.points);
+
     Button btn0, btn1, btn2, btn3, nextBtn;
 
     @Override
@@ -119,6 +121,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (selectedAnswer.equals(questionModelList.get(currentQuestionIndex).getCorrect())) {
                 score += incrementValue;
+                points.setText("Points: " + score);
                 Log.i("Score of quiz", String.valueOf(score));
             }
             currentQuestionIndex++;
