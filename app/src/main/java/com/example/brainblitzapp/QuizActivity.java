@@ -153,7 +153,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     private void finishQuiz() {
         int totalQuestions = questionModelList.size();
-        int percentage = (int) ((score * 100.0f) / totalQuestions);
+        int percentage = (int) ((currentQuestionIndex * 100.0f) / totalQuestions);
 
         ScoreBinding dialogBinding = ScoreBinding.inflate(getLayoutInflater());
         dialogBinding.scoreProgressIndicator.setProgress(percentage);

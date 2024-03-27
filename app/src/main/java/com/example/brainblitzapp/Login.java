@@ -84,6 +84,11 @@ public class Login extends AppCompatActivity {
                                 userEmail[0] = documentSnapshot.getString("email");
                             }
 
+                            if(userEmail[0].isEmpty()){
+                                Toast.makeText(Login.this, "That username does not exist", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Log.d("Debugging Texts", "Email is: "+userEmail[0].trim());
                             //signin user with email and password
                             signinUser(userEmail[0].trim(), password);
                         }
@@ -107,7 +112,7 @@ public class Login extends AppCompatActivity {
                     //send user to the homepage
                     startActivity(new Intent( Login.this, HomeActivity.class));
                 }else{
-                    Toast.makeText(Login.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Login Unsuccessful. Check your password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
