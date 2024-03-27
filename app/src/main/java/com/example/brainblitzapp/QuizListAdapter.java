@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import com.example.brainblitzapp.QuizActivity;
-import com.example.brainblitzapp.databinding.QuizItemRecyclerRowBinding;
-
-import kotlin.jvm.JvmStatic;
 
 public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyViewHolder> {
 
@@ -29,15 +27,16 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        QuizItemRecyclerRowBinding binding = QuizItemRecyclerRowBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new MyViewHolder(binding);
+        View view = LayoutInflater.from(context).inflate(R.layout.quiz_item_recycler_row, parent, false);
+
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.binding.quizTitleText.setText(quizModelList.get(position).getTitle());
+        holder.title.setText(quizModelList.get(position).getTitle());
 
-        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             String difficulty;
             @Override
             public void onClick(View v) {
@@ -48,7 +47,7 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
 
                 final String[] difficulties = {"Easy", "Medium", "Hard"};
                 new AlertDialog.Builder(context)
-                        .setView(holder.binding.getRoot()).setTitle("Select a difficulty").setItems(difficulties, new DialogInterface.OnClickListener() {
+                        .setView(holder.itemView).setTitle("Select a difficulty").setItems(difficulties, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 difficulty = difficulties[which];
@@ -79,11 +78,12 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        private final QuizItemRecyclerRowBinding binding;
+        TextView title;
 
-        public MyViewHolder(@NonNull QuizItemRecyclerRowBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            title = itemView.findViewById(R.id.quiz_title_text);
         }
     }
 }
