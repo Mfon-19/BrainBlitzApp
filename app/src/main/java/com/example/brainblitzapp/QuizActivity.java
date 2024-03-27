@@ -34,6 +34,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private int currentQuestionIndex = 0;
     private String selectedAnswer = "";
     private int score = 0;
+    private int incrementValue;
 
     Button btn0, btn1, btn2, btn3, nextBtn;
 
@@ -59,6 +60,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         int category = intent.getIntExtra("id", 0);
         String difficulty = intent.getStringExtra("difficulty");
+
+        //set up how much a correct question is worth in points
+        if(difficulty.equals("easy")) incrementValue = 1;
+        if(difficulty.equals("medium")) incrementValue = 2;
+        if(difficulty.equals("hard")) incrementValue = 3;
 
         //i'm thinking we set the questions up in the HomeActivity so this class doesn't have too much processing to do
 
@@ -133,7 +139,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             if (selectedAnswer.equals(questionModelList.get(currentQuestionIndex).getCorrect())) {
-                score++;
+                score += incrementValue;
                 Log.i("Score of quiz", String.valueOf(score));
             }
             currentQuestionIndex++;
@@ -163,8 +169,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         dialogBinding.finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            } // send an intent back to the home activity
+                Intent intent = new Intent(QuizActivity.this, HomeActivity.class);
+                intent.putExtra("points_from_quiz", score);
+
+                startActivity(intent);
+            }
         });
 
         new AlertDialog.Builder(this)
