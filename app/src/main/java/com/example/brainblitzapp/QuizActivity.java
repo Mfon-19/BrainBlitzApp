@@ -31,20 +31,23 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static List<QuestionModel> questionModelList;
-    private static String time;
-    private int currentQuestionIndex = -1;
+    private int currentQuestionIndex = 0;
     private String selectedAnswer = "";
     private int score = 0;
-    Button btn0 = findViewById(R.id.btn0);
-    Button btn1 = findViewById(R.id.btn1);
-    Button btn2 = findViewById(R.id.btn2);
-    Button btn3 = findViewById(R.id.btn3);
-    Button nextBtn = findViewById(R.id.next_btn);
+    private int incrementValue;
+
+    Button btn0, btn1, btn2, btn3, nextBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_activity);
+
+        btn0 = findViewById(R.id.btn0);
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        nextBtn = findViewById(R.id.next_btn);
 
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
@@ -54,37 +57,45 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
 
+
         int category = intent.getIntExtra("id", 0);
         String difficulty = intent.getStringExtra("difficulty");
 
+        //set up how much a correct question is worth in points
+        if(difficulty.equals("easy")) incrementValue = 1;
+        if(difficulty.equals("medium")) incrementValue = 2;
+        if(difficulty.equals("hard")) incrementValue = 3;
+
         //i'm thinking we set the questions up in the HomeActivity so this class doesn't have too much processing to do
+
+
         questionModelList = getQuestions(category, difficulty);
 
-        loadQuestions();
-        startTimer();
+
+        //startTimer();
     }
 
-    private void startTimer() {
-        long totalTimeInMillis = Integer.parseInt(time) * 60 * 1000L;
-        new CountDownTimer(totalTimeInMillis, 1000L) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                long seconds = millisUntilFinished / 1000;
-                long minutes = seconds / 60;
-                long remainingSeconds = seconds % 60;
-                TextView timerIndicatorTextview = findViewById(R.id.timer_indicator_textview);
-                timerIndicatorTextview.setText(String.format("%02d:%02d", minutes, remainingSeconds));
-            }
-
-            @Override
-            public void onFinish() {
-                // Finish the quiz
-            }
-        }.start();
-    }
+//    private void startTimer() {
+//        long totalTimeInMillis = Integer.parseInt(time) * 60 * 1000L;
+//        new CountDownTimer(totalTimeInMillis, 1000L) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                long seconds = millisUntilFinished / 1000;
+//                long minutes = seconds / 60;
+//                long remainingSeconds = seconds % 60;
+//                TextView timerIndicatorTextview = findViewById(R.id.timer_indicator_textview);
+//                timerIndicatorTextview.setText(String.format("%02d:%02d", minutes, remainingSeconds));
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                // Finish the quiz
+//            }
+//        }.start();
+//    }
 
     private void loadQuestions() {
-        currentQuestionIndex++;
+        Log.d("Debugging Texts", "CurrentQuestionIndex is: " + currentQuestionIndex);
 
         selectedAnswer = "";
         if (currentQuestionIndex == questionModelList.size()) {
@@ -100,12 +111,17 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // set the question
         TextView questionTextview = findViewById(R.id.question_textview);
         questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
+        Log.d("Debugging Texts", "Question is: "+questionModelList.get(currentQuestionIndex).getQuestion());
 
         //sets the answers to be clicked by the user
-        btn0.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
-        btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
-        btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
-        btn3.setText(questionModelList.get(currentQuestionIndex).getOptions().get(3));
+        btn0.setText(questionModelList.get(currentQuestionIndex).getCorrect());
+        Log.d("Debugging Texts", "Correct is: "+questionModelList.get(currentQuestionIndex).getCorrect());
+        btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
+        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(0));
+        btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
+        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(1));
+        btn3.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
+        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(2));
     }
 
     @Override
@@ -123,7 +139,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             if (selectedAnswer.equals(questionModelList.get(currentQuestionIndex).getCorrect())) {
-                score++;
+                score += incrementValue;
                 Log.i("Score of quiz", String.valueOf(score));
             }
             currentQuestionIndex++;
@@ -153,8 +169,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         dialogBinding.finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            } // send an intent back to the home activity
+                Intent intent = new Intent(QuizActivity.this, HomeActivity.class);
+                intent.putExtra("points_from_quiz", score);
+
+                startActivity(intent);
+            }
         });
 
         new AlertDialog.Builder(this)
@@ -169,6 +188,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<QuestionModel> getQuestions(int category, String difficulty){
         String API_ENDPOINT = "https://opentdb.com/api.php?amount=10&category="+category+"&difficulty="+difficulty+"&type=multiple";
+        Log.d("Debugging Texts", "api endpoint is: "+API_ENDPOINT);
         List<QuestionModel> questions = new ArrayList<>();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -181,9 +201,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         try {
+                            Log.d("Debugging Texts", "Started Jsonrequest");
                             //get json array "results"
                             JSONArray jsonArray = jsonObject.getJSONArray("results");
 
+                            Log.d("Debugging Texts", "loading jsonarray");
                             //iterate over the number of json objects embedded in the json array
                             for(int i = 0; i < jsonArray.length(); i++){
                                 //get the first json object at index 'i'
@@ -193,7 +215,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                                 List<String> incorrectAnswers = new ArrayList<>();
                                 JSONArray jArray = result.getJSONArray("incorrect_answers");
                                 for (int j = 0; j < jArray.length(); j++) {
-                                    incorrectAnswers.add(jArray.getString(i));
+                                    incorrectAnswers.add(jArray.getString(j));
                                 }
 
                                 //add a question model object containing the question, incorrect answers list and correct answer into the questions list
@@ -201,6 +223,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                                                                 result.getString("correct_answer")));
                                 
                             }
+
+                            Log.d("Debugging Texts", "Starting load questions method");
+                            Log.d("Debugging Texts", "list size is: "+questions.size());
+                            loadQuestions();
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -217,9 +243,6 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         requestQueue.add(jsonObjectRequest);
 
         return questions;
-    }
-    public static void setTime(String time) {
-        QuizActivity.time = time;
     }
 }
 

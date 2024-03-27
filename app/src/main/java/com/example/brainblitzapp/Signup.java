@@ -113,6 +113,8 @@ public class Signup extends AppCompatActivity {
         db.collection("users").add(users).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
+                //users points are 0 because they have not yet done any quiz
+                sessionManager.updateUserPoints(0);
                 //send user to the homepage
                 startActivity(new Intent( Signup.this, HomeActivity.class));
             }

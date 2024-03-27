@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class SessionManager {
     private static final String LAST_LOGIN = "lastLoginKey";
     private static final String FILE_NAME = "saved_info";
+    private static final String POINTS = "pointsKey";
     private final SharedPreferences sharedPreferences;
     private final Context context;
 
@@ -24,6 +25,8 @@ public class SessionManager {
     }
     protected void loadData(){
         String lastLogin;
+        String points;
+
         if(sharedPreferences.contains(LAST_LOGIN)){
             lastLogin = sharedPreferences.getString(LAST_LOGIN, null);
         }
@@ -34,9 +37,12 @@ public class SessionManager {
             String currentTime = LocalDateTime.now().toString();
             if(getHoursDifference(lastLogin, currentTime) <= 12) {
                 Intent intent = new Intent(context, HomeActivity.class);
-                context.startActivity(intent);
 
-                //TODO: put some information to be sent to home activity
+                points = sharedPreferences.getString(POINTS, null);
+
+                intent.putExtra("points_from_session_manager", points);
+
+                context.startActivity(intent);
             }
         }
     }
@@ -64,5 +70,15 @@ public class SessionManager {
             editor.putString(LAST_LOGIN, currentTime);
             editor.apply();
         }
+    }
+
+    protected void updateUserPoints(int points){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(POINTS, points);
+        editor.apply();
+    }
+
+    protected int getUserPoints(){
+        return sharedPreferences.getInt(POINTS, 1);
     }
 }
