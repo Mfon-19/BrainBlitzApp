@@ -43,8 +43,8 @@ public class HomeActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         binding.progressBar.setVisibility(View.GONE);
         adapter = new QuizListAdapter(quizModelList, this);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
 
