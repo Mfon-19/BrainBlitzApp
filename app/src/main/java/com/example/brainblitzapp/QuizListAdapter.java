@@ -66,7 +66,7 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
                             public void onClick(DialogInterface dialog, int which) {
                                 // nothing needs to be done because maybe the user wants to select a different topic
                             }
-                        });
+                        }).create();
 
                 v.getContext().startActivity(intent);
             }
