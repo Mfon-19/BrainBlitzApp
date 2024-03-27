@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,8 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.brainblitzapp.databinding.QuizActivityBinding;
 import com.example.brainblitzapp.databinding.ScoreBinding;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,23 +32,25 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     private static List<QuestionModel> questionModelList;
     private static String time;
-
-    private QuizActivityBinding binding;
     private int currentQuestionIndex = -1;
     private String selectedAnswer = "";
     private int score = 0;
+    Button btn0 = findViewById(R.id.btn0);
+    Button btn1 = findViewById(R.id.btn1);
+    Button btn2 = findViewById(R.id.btn2);
+    Button btn3 = findViewById(R.id.btn3);
+    Button nextBtn = findViewById(R.id.next_btn);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = QuizActivityBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.quiz_activity);
 
-        binding.btn0.setOnClickListener(this);
-        binding.btn1.setOnClickListener(this);
-        binding.btn2.setOnClickListener(this);
-        binding.btn3.setOnClickListener(this);
-        binding.nextBtn.setOnClickListener(this);
+        btn0.setOnClickListener(this);
+        btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
+        btn3.setOnClickListener(this);
+        nextBtn.setOnClickListener(this);
 
         Intent intent = getIntent();
 
@@ -69,7 +72,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 long seconds = millisUntilFinished / 1000;
                 long minutes = seconds / 60;
                 long remainingSeconds = seconds % 60;
-                binding.timerIndicatorTextview.setText(String.format("%02d:%02d", minutes, remainingSeconds));
+                TextView timerIndicatorTextview = findViewById(R.id.timer_indicator_textview);
+                timerIndicatorTextview.setText(String.format("%02d:%02d", minutes, remainingSeconds));
             }
 
             @Override
@@ -88,25 +92,28 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        binding.questionIndicatorTextview.setText("Question " + (currentQuestionIndex + 1) + "/ " + questionModelList.size());
-        binding.questionProgressIndicator.setProgress((int) (currentQuestionIndex * 100.0f / questionModelList.size()));
+        TextView questionIndicatorTextView = findViewById(R.id.question_indicator_textview);
+        LinearProgressIndicator questionProgressIndicator = findViewById(R.id.question_progress_indicator);
+        questionIndicatorTextView.setText("Question " + (currentQuestionIndex + 1) + "/ " + questionModelList.size());
+        questionProgressIndicator.setProgress((int) (currentQuestionIndex * 100.0f / questionModelList.size()));
 
         // set the question
-        binding.questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
+        TextView questionTextview = findViewById(R.id.question_textview);
+        questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
 
         //sets the answers to be clicked by the user
-        binding.btn0.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
-        binding.btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
-        binding.btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
-        binding.btn3.setText(questionModelList.get(currentQuestionIndex).getOptions().get(3));
+        btn0.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
+        btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
+        btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
+        btn3.setText(questionModelList.get(currentQuestionIndex).getOptions().get(3));
     }
 
     @Override
     public void onClick(View view) {
-        binding.btn0.setBackgroundColor(getResources().getColor(R.color.gray));
-        binding.btn1.setBackgroundColor(getResources().getColor(R.color.gray));
-        binding.btn2.setBackgroundColor(getResources().getColor(R.color.gray));
-        binding.btn3.setBackgroundColor(getResources().getColor(R.color.gray));
+        btn0.setBackgroundColor(getResources().getColor(R.color.gray));
+        btn1.setBackgroundColor(getResources().getColor(R.color.gray));
+        btn2.setBackgroundColor(getResources().getColor(R.color.gray));
+        btn3.setBackgroundColor(getResources().getColor(R.color.gray));
 
         Button clickedBtn = (Button) view;
         if (view.getId() == R.id.next_btn) {
