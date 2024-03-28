@@ -47,7 +47,7 @@
         android:layout_marginTop="100dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="10dp"
-        android:text="@string/signup"
+        android:text="Signup"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
