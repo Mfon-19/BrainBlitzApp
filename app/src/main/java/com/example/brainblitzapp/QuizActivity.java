@@ -26,20 +26,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static List<QuestionModel> questionModelList;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex = 0, incrementValue, score = 0, correctQuestions = 0, numQuestions;
     private String selectedAnswer = "";
-    private int score = 0;
-    private int incrementValue;
-
-    TextView points = findViewById(R.id.points);
-
+    private String[] intermediateOptions;
+    TextView points, questionIndicatorTextView;
     Button btn0, btn1, btn2, btn3, nextBtn;
+    LinearProgressIndicator questionProgressIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         btn2 = findViewById(R.id.btn2);
         btn3 = findViewById(R.id.btn3);
         nextBtn = findViewById(R.id.next_btn);
+        points = findViewById(R.id.points);
+        questionProgressIndicator = findViewById(R.id.question_progress_indicator);
+        questionIndicatorTextView = findViewById(R.id.question_indicator_textview);
 
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
@@ -84,25 +87,30 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        TextView questionIndicatorTextView = findViewById(R.id.question_indicator_textview);
-        LinearProgressIndicator questionProgressIndicator = findViewById(R.id.question_progress_indicator);
-        questionIndicatorTextView.setText("Question " + (currentQuestionIndex + 1) + "/ " + questionModelList.size());
-        questionProgressIndicator.setProgress((int) (currentQuestionIndex * 100.0f / questionModelList.size()));
+        points.setText("Points: " + score);
+
+        questionIndicatorTextView.setText("Question " + (currentQuestionIndex + 1) + "/ " + numQuestions);
+        questionProgressIndicator.setProgress(((currentQuestionIndex + 1) * 100) / numQuestions, true);
 
         // set the question
         TextView questionTextview = findViewById(R.id.question_textview);
         questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
         Log.d("Debugging Texts", "Question is: "+questionModelList.get(currentQuestionIndex).getQuestion());
 
-        //sets the answers to be clicked by the user
-        btn0.setText(questionModelList.get(currentQuestionIndex).getCorrect());
-        Log.d("Debugging Texts", "Correct is: "+questionModelList.get(currentQuestionIndex).getCorrect());
-        btn1.setText(questionModelList.get(currentQuestionIndex).getOptions().get(0));
-        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(0));
-        btn2.setText(questionModelList.get(currentQuestionIndex).getOptions().get(1));
-        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(1));
-        btn3.setText(questionModelList.get(currentQuestionIndex).getOptions().get(2));
-        Log.d("Debugging Texts", "Other option is: "+questionModelList.get(currentQuestionIndex).getOptions().get(2));
+        //randomizes the answers to be clicked by the user
+        List<String> intermediateOptions = new ArrayList<>();
+        intermediateOptions.add(questionModelList.get(currentQuestionIndex).getCorrect());
+
+        for(int i = 0; i < 3; i++){
+            intermediateOptions.add(questionModelList.get(currentQuestionIndex).getOptions().get(i));
+        }
+
+        Collections.shuffle(intermediateOptions);
+
+        btn0.setText(intermediateOptions.get(2));
+        btn1.setText(intermediateOptions.get(1));
+        btn2.setText(intermediateOptions.get(3));
+        btn3.setText(intermediateOptions.get(0));
     }
 
     @Override
@@ -121,7 +129,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (selectedAnswer.equals(questionModelList.get(currentQuestionIndex).getCorrect())) {
                 score += incrementValue;
-                points.setText("Points: " + score);
+                correctQuestions++;
+
                 Log.i("Score of quiz", String.valueOf(score));
             }
             currentQuestionIndex++;
@@ -134,8 +143,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void finishQuiz() {
-        int totalQuestions = questionModelList.size();
-        int percentage = (int) ((currentQuestionIndex * 100.0f) / totalQuestions);
+        int percentage = (int) ((correctQuestions * 100.0f) / numQuestions);
 
         ScoreBinding dialogBinding = ScoreBinding.inflate(getLayoutInflater());
         dialogBinding.scoreProgressIndicator.setProgress(percentage);
@@ -147,7 +155,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             dialogBinding.scoreTitle.setText("Oops! You have failed");
             dialogBinding.scoreTitle.setTextColor(Color.RED);
         }
-        dialogBinding.scoreSubtitle.setText(score + " out of " + totalQuestions + " are correct");
+        dialogBinding.scoreSubtitle.setText(correctQuestions + " out of " + numQuestions + " are correct");
         dialogBinding.finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +204,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                                 //put the incorrect answers from the "incorrect_answers" json array in the json object into an arraylist
                                 List<String> incorrectAnswers = new ArrayList<>();
                                 JSONArray jArray = result.getJSONArray("incorrect_answers");
-                                for (int j = 0; j < jArray.length(); j++) {
+                                for (int j = 0; j < 3; j++) {
                                     incorrectAnswers.add(jArray.getString(j));
                                 }
 
@@ -208,6 +216,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
                             Log.d("Debugging Texts", "Starting load questions method");
                             Log.d("Debugging Texts", "list size is: "+questions.size());
+
+                            numQuestions = jsonArray.length();
                             loadQuestions();
 
                         } catch (JSONException e) {

@@ -25,7 +25,7 @@ public class SessionManager {
     }
     protected void loadData(){
         String lastLogin;
-        String points;
+        int points;
 
         if(sharedPreferences.contains(LAST_LOGIN)){
             lastLogin = sharedPreferences.getString(LAST_LOGIN, null);
@@ -38,7 +38,7 @@ public class SessionManager {
             if(getHoursDifference(lastLogin, currentTime) <= 12) {
                 Intent intent = new Intent(context, HomeActivity.class);
 
-                points = sharedPreferences.getString(POINTS, null);
+                points = sharedPreferences.getInt(POINTS, -1);
 
                 intent.putExtra("points_from_session_manager", points);
 
