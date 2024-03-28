@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Points: "
+        android:text="@string/points"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BrainBlitz"
+            android:text="@string/brain_blitz"
             android:gravity="center"
             android:textSize="34sp"
             android:letterSpacing="0.1"
@@ -44,7 +44,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="There is nothing more amazing that playing and learning at the same time!"
+            android:text="@string/there_is_nothing_more_amazing_than_playing_and_learning_at_the_same_time"
             android:gravity="center"
             android:textSize="18sp"
             android:layout_margin="16dp"
@@ -57,7 +57,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Quiz!"
+        android:text="@string/choose_topic"
         android:layout_marginTop="16dp"
         android:layout_marginStart="4dp"
         android:textSize="20sp"

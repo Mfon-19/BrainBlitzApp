@@ -10,5 +10,16 @@
     <string name="username_instruction">Enter a Username</string>
     <string name="login">Login</string>
     <string name="welcome_to_brain_blitz">Welcome to Brain Blitz</string>
+    <string name="login_caps">LOGIN</string>
+    <string name="if_you_have_an_account">If you have an account:</string>
+    <string name="signup_caps">SIGNUP</string>
+    <string name="if_you_dont_have_an_account">If you don\'t have an account:</string>
+    <string name="brain_blitz">Brain Blitz</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="points">Points:</string>
+    <string name="brainblitz">BrainBlitz</string>
+    <string name="there_is_nothing_more_amazing_than_playing_and_learning_at_the_same_time">There is nothing more amazing than playing and learning at the same time!</string>
+    <string name="choose_topic">Choose Topic!</string>
+    <string name="next">Next</string>
 
 </resources>

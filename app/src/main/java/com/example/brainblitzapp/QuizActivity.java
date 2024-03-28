@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +37,6 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private static List<QuestionModel> questionModelList;
     private int currentQuestionIndex = 0, incrementValue, score = 0, correctQuestions = 0, numQuestions;
     private String selectedAnswer = "";
-    private String[] intermediateOptions;
     TextView points, questionIndicatorTextView;
     Button btn0, btn1, btn2, btn3, nextBtn;
     LinearProgressIndicator questionProgressIndicator;
@@ -46,6 +46,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_activity);
 
+        //get references to views
         btn0 = findViewById(R.id.btn0);
         btn1 = findViewById(R.id.btn1);
         btn2 = findViewById(R.id.btn2);
@@ -55,14 +56,15 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         questionProgressIndicator = findViewById(R.id.question_progress_indicator);
         questionIndicatorTextView = findViewById(R.id.question_indicator_textview);
 
+        //set a common click listener for buttons in the quiz
         btn0.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
 
+        //get the user selections for quiz topic and difficulty
         Intent intent = getIntent();
-
 
         int category = intent.getIntExtra("id", 0);
         String difficulty = intent.getStringExtra("difficulty");
@@ -72,15 +74,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         if(difficulty.equals("medium")) incrementValue = 2;
         if(difficulty.equals("hard")) incrementValue = 3;
 
-        //i'm thinking we set the questions up in the HomeActivity so this class doesn't have too much processing to do
-
-
         questionModelList = getQuestions(category, difficulty);
     }
 
     private void loadQuestions() {
-        Log.d("Debugging Texts", "CurrentQuestionIndex is: " + currentQuestionIndex);
-
         selectedAnswer = "";
         if (currentQuestionIndex == questionModelList.size()) {
             finishQuiz();
@@ -95,7 +92,6 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // set the question
         TextView questionTextview = findViewById(R.id.question_textview);
         questionTextview.setText(questionModelList.get(currentQuestionIndex).getQuestion());
-        Log.d("Debugging Texts", "Question is: "+questionModelList.get(currentQuestionIndex).getQuestion());
 
         //randomizes the answers to be clicked by the user
         List<String> intermediateOptions = new ArrayList<>();
@@ -130,9 +126,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             if (selectedAnswer.equals(questionModelList.get(currentQuestionIndex).getCorrect())) {
                 score += incrementValue;
                 correctQuestions++;
+                Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(this, "Not Correct", Toast.LENGTH_SHORT).show();
 
-                Log.i("Score of quiz", String.valueOf(score));
-            }
             currentQuestionIndex++;
             loadQuestions();
         } else {
@@ -159,6 +156,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         dialogBinding.finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //send intent back to home activity containing the number of points the user gained in current quiz
                 Intent intent = new Intent(QuizActivity.this, HomeActivity.class);
                 intent.putExtra("points_from_quiz", score);
 
@@ -172,13 +170,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
-    public static void setQuestionModelList(List<QuestionModel> questionModelList) {
-        QuizActivity.questionModelList = questionModelList;
-    }
-
+    //gets the questions from the OpenTDB api with a unique endpoint corresponding to user choices
+    //returns a list containing QuestionModel objects
     private List<QuestionModel> getQuestions(int category, String difficulty){
         String API_ENDPOINT = "https://opentdb.com/api.php?amount=10&category="+category+"&difficulty="+difficulty+"&type=multiple";
-        Log.d("Debugging Texts", "api endpoint is: "+API_ENDPOINT);
         List<QuestionModel> questions = new ArrayList<>();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -191,11 +186,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         try {
-                            Log.d("Debugging Texts", "Started Jsonrequest");
                             //get json array "results"
                             JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-                            Log.d("Debugging Texts", "loading jsonarray");
                             //iterate over the number of json objects embedded in the json array
                             for(int i = 0; i < jsonArray.length(); i++){
                                 //get the first json object at index 'i'
@@ -205,17 +198,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                                 List<String> incorrectAnswers = new ArrayList<>();
                                 JSONArray jArray = result.getJSONArray("incorrect_answers");
                                 for (int j = 0; j < 3; j++) {
-                                    incorrectAnswers.add(jArray.getString(j));
+                                    incorrectAnswers.add(Html.fromHtml(jArray.getString(j), 1).toString());
                                 }
 
                                 //add a question model object containing the question, incorrect answers list and correct answer into the questions list
-                                questions.add(new QuestionModel(result.getString("question"), incorrectAnswers,
-                                                                result.getString("correct_answer")));
+                                questions.add(new QuestionModel(Html.fromHtml(result.getString("question"), 1).toString(), incorrectAnswers,
+                                                                Html.fromHtml(result.getString("correct_answer"), 1).toString()));
                                 
                             }
-
-                            Log.d("Debugging Texts", "Starting load questions method");
-                            Log.d("Debugging Texts", "list size is: "+questions.size());
 
                             numQuestions = jsonArray.length();
                             loadQuestions();

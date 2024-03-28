@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
 
                 int category = quizModelList.get(position).getId();
 
-
                 final String[] difficulties = {"Easy", "Medium", "Hard"};
                 new AlertDialog.Builder(context)
                         .setTitle("Select a difficulty").setItems(difficulties, new DialogInterface.OnClickListener() {
@@ -58,17 +56,13 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.MyView
 
                                 context.startActivity(intent);
                             }
-                        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // nothing needs to be done because maybe the user wants to select a different topic
                             }
                         }).create().show();
+
             }
         });
     }

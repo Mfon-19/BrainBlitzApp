@@ -88,7 +88,7 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "That username does not exist", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            Log.d("Debugging Texts", "Email is: "+userEmail[0].trim());
+
                             //signin user with email and password
                             signinUser(userEmail[0].trim(), password);
                         }
