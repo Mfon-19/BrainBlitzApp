@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/background_main"
     android:gravity="center">
 
     <TextView
@@ -10,15 +11,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:text="@string/appName" />
+        android:fontFamily="cursive"
+        android:text="@string/appName"
+        android:textSize="80dp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginStart="30dp"
         android:layout_gravity="start"
+        android:layout_marginStart="150dp"
+        android:layout_marginBottom="30dp"
+        android:textColor="@color/white"
+        android:textSize="40dp"
         android:text="@string/login" />
 
     <TextView
@@ -27,7 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="101dp"
         android:layout_gravity="start"
+        android:textColor="@color/white"
         android:layout_marginTop="20dp"
+        android:textSize="20dp"
         android:text="@string/username" />
 
     <EditText
@@ -47,6 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="101dp"
         android:layout_gravity="start"
+        android:textColor="@color/white"
+        android:textSize="20dp"
         android:layout_marginTop="40dp"
         android:text="@string/password" />
 
