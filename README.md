@@ -40,3 +40,6 @@ Manages user authentication including signup and login processes. Firestore was 
 
 ## Credits
 
+Collaborators in creating this project
+@rupokghosh
+@abdulaitobi
