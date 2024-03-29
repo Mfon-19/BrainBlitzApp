@@ -1,8 +1,5 @@
 # BrainBlitz
 
-This project is an Employee Management System implemented in Python, utilizing the dictionary data structure. It provides various functionalities for managing employee data within an organization.
-
-# Overview
 Brain Blitz is a dynamic quiz application for Android that we designed to challenge users with questions from a variety of topics. Users can select their preferred topics and difficulty levels, earning points based on the complexity of the questions they answer. We built this application using Android Studio with Java, leveraging the Open Trivia Database API for sourcing questions and Firebase for user authentication. We also used Firebase Firestore as a database for storing user information.
 
 ## Features
